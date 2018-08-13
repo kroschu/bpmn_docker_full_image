@@ -19,7 +19,7 @@ des BPMN-Studios zu erzeugen.
 Der Container lässt sich mit folgendem Befehl starten:
 
 ```shell
-docker run -p 8000:8000 -p 9000:9000 bpmn-full
+docker run -p 8000:8000 -p 9000:9000 bpmn-full:v0.1
 ```
 
 Anschließend lässt sich das BPMN-Studio unter URL `http://localhost:9000` aufrufen.
