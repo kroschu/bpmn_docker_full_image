@@ -37,16 +37,13 @@ pipeline {
         script {
           branch_is_master = env.BRANCH_NAME == 'master';
 
-          if (branch_is_master) {
-            image_tag = "b${env.BUILD_NUMBER}";
-          } else {
-            def cleaned_branch_name = env.BRANCH_NAME.replace('/', '_');
-            image_tag = "${cleaned_branch_name}-b${env.BUILD_NUMBER}";
-          }
-
+          image_tag = "${env.BRANCH_NAME}-v${env.BUILD_NUMBER}";
           image_name = '5minds/bpmn-studio-bundle';
+
           full_image_name = "${image_name}:${image_tag}"
-          dockerImage = docker.build(full_image_name, '--no-cache .');
+          dockerImage = docker.build(full_image_name,  '--build-arg NODE_IMAGE_VERSION=10-alpine \
+                                                        --build-arg PROCESS_ENGINE_VERSION=0.1.3 \
+                                                        --build-arg BPMN_STUDIO_VERSION=develop .');
         }
       }
     }
