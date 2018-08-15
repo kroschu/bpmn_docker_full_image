@@ -1,25 +1,40 @@
+# Supported tags and respective Dockerfile links
+* `latest` [(master/Dockerfile)](https://github.com/process-engine/bpmn_docker_full_image/blob/master/Dockerfile)
+* `master-v<build-number>` [(master/Dockerfile)](https://github.com/process-engine/bpmn_docker_full_image/blob/master/Dockerfile)
+
 # BPMN Docker Fullimage
 
 Dieses Projekt beinhaltet eine Dockerfile um ein vollfunktionierendes 
 BPMN-Studio mit Webinterface und API zu starten.
 Es werden die NPM packages von bpmn-studio und process-engine verwendet 
-und alle Abhängkeiten installiert
+und alle Abhängigkeiten installiert
 
 ## Was sind die Ziele dieses Projekts?
 
-Ziel dieses Projektes ist es, ein vollumfängliches docker image zur Benutzung 
+Ziel dieses Projektes ist es, ein vollumfängliches Docker image zur Benutzung 
 des BPMN-Studios zu erzeugen.
 
 ## Relevante URLs
 
-**TODO** Docker Hub Link angeben.
+### Website
+
+Weitere Informationen befinden sich auf der process-engine Website:
+https://www.process-engine.io
+
+### Docker Hub
+
+https://hub.docker.com/r/5minds/bpmn-studio-bundle/
+
+### GitHub
+
+https://github.com/process-engine/bpmn_docker_full_image
 
 ## Wie kann ich das Projekt aufsetzen?
 
 Der Container lässt sich mit folgendem Befehl starten:
 
 ```shell
-docker run -p 8000:8000 -p 9000:9000 bpmn-full:v0.1
+docker run -p 8000:8000 -p 9000:9000 5minds/bpmn-studio-bundle:latest
 ```
 
 Anschließend lässt sich das BPMN-Studio unter URL `http://localhost:9000` aufrufen.
@@ -35,7 +50,7 @@ Die ProcessEngine API ist unter `http://localhost:8000` erreichbar.
 Das Image lässt sich wie folgt bauen:
 
 ```shell
-docker build -t bpmn-full:v0.1 .
+docker build -t 5minds/bpmn-studio-bundle:latest .
 ```
 
 Es ist möglich, das base image, sowie die Paketversionen anzupassen:
@@ -47,8 +62,8 @@ Es ist möglich, das base image, sowie die Paketversionen anzupassen:
 ```shell
 docker build --build-arg NODE_IMAGE_VERSION=10-alpine \
              --build-arg PROCESS_ENGINE_VERSION=0.1.3 \
-             --build-arg BPMN_STUDIO_VERSION=3.0.1 \
-             -t bpmn-full:v0.1 .
+             --build-arg BPMN_STUDIO_VERSION=develop \
+             --tag 5minds/bpmn-studio-bundle:latest .
 ```
 
 

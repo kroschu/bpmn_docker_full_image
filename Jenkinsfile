@@ -35,13 +35,13 @@ pipeline {
     stage('Build') {
       steps {
         script {
-          image_tag = "${env.BRANCH_NAME}-v${env.BUILD_NUMBER}";
+          image_tag = "${env.BRANCH_NAME}-b${env.BUILD_NUMBER}";
           image_name = '5minds/bpmn-studio-bundle';
 
           full_image_name = "${image_name}:${image_tag}"
           sh("docker build --build-arg NODE_IMAGE_VERSION=10-alpine \
                            --build-arg PROCESS_ENGINE_VERSION=0.1.3 \
-                           --build-arg BPMN_STUDIO_VERSION=develop \
+                           --build-arg BPMN_STUDIO_VERSION=4.0.1-e0952e0d-b1 \
                            --tag ${full_image_name} .");
         }
       }
@@ -50,9 +50,16 @@ pipeline {
       steps {
         withDockerRegistry([ credentialsId: "5mio-docker-hub-username-and-password", url: "" ]) {
           script {
+            // Push with build number
             sh("docker push ${full_image_name}");
-            sh("docker tag ${full_image_name} ${image_name}:latest")
-            sh("docker push ${image_name}:latest")
+
+            // Push with latest tag
+            sh("docker tag ${full_image_name} ${image_name}:latest");
+            sh("docker push ${image_name}:latest");
+
+            // Push with branch tag
+            sh("docker tag ${full_image_name} ${image_name}:${env.BRANCH_NAME}")
+            sh("docker push ${image_name}:${env.BRANCH_NAME}");
           }
         }
       }
