@@ -18,7 +18,7 @@ RUN npm install -g @process-engine/process_engine_runtime@${PROCESS_ENGINE_VERSI
 # Install bpmn studio
 FROM process_engine as bpmn_studio
 RUN npm install -g electron-builder
-ARG BPMN_STUDIO_VERSION="create_dockerfile"
+ARG BPMN_STUDIO_VERSION="develop"
 RUN npm install -g bpmn-studio@${BPMN_STUDIO_VERSION}
 
 # Create release
