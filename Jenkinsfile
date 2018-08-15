@@ -41,9 +41,9 @@ pipeline {
           image_name = '5minds/bpmn-studio-bundle';
 
           full_image_name = "${image_name}:${image_tag}"
-          dockerImage = docker.build(full_image_name,  '--build-arg NODE_IMAGE_VERSION=10-alpine \
-                                                        --build-arg PROCESS_ENGINE_VERSION=0.1.3 \
-                                                        --build-arg BPMN_STUDIO_VERSION=develop .');
+          sh("docker build --build-arg NODE_IMAGE_VERSION=10-alpine \
+                           --build-arg PROCESS_ENGINE_VERSION=0.1.3 \
+                           --build-arg BPMN_STUDIO_VERSION=develop ${image_tag} .");
         }
       }
     }
