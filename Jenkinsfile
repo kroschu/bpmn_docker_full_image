@@ -35,8 +35,6 @@ pipeline {
     stage('Build') {
       steps {
         script {
-          branch_is_master = env.BRANCH_NAME == 'master';
-
           image_tag = "${env.BRANCH_NAME}-v${env.BUILD_NUMBER}";
           image_name = '5minds/bpmn-studio-bundle';
 
@@ -52,11 +50,7 @@ pipeline {
       steps {
         withDockerRegistry([ credentialsId: "5mio-docker-hub-username-and-password", url: "" ]) {
           script {
-            dockerImage.push();
-
-            if (branch_is_master) {
-              dockerImage.push('latest');
-            }
+            sh("docker push ${full_image_name}");
           }
         }
       }
