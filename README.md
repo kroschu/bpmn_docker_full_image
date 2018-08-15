@@ -1,6 +1,7 @@
 # Supported tags and respective Dockerfile links
 * `latest` [(master/Dockerfile)](https://github.com/process-engine/bpmn_docker_full_image/blob/master/Dockerfile)
-* `master-v<build-number>` [(master/Dockerfile)](https://github.com/process-engine/bpmn_docker_full_image/blob/master/Dockerfile)
+* `master` [(master/Dockerfile)](https://github.com/process-engine/bpmn_docker_full_image/blob/master/Dockerfile)
+* `master-b<build-number>` [(master/Dockerfile)](https://github.com/process-engine/bpmn_docker_full_image/blob/master/Dockerfile)
 
 # BPMN Docker Fullimage
 
