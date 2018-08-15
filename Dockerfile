@@ -26,6 +26,11 @@ FROM bpmn_studio as release
 EXPOSE 8000 9000
 ENTRYPOINT ["/usr/bin/supervisord", "-c", "/etc/supervisor/conf.d/supervisord.conf"]
 
+# Set a health check
+HEALTHCHECK --interval=5s \
+            --timeout=5s \
+            CMD curl -f http://127.0.0.1:9000 || exit 1
+
 # Thanks for using BPMN-Studio Docker image
 LABEL de.5minds.version="0.0.1" \
       de.5minds.release-date="2018-08-13" \
