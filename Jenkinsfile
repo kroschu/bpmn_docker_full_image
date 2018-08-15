@@ -43,7 +43,8 @@ pipeline {
           full_image_name = "${image_name}:${image_tag}"
           sh("docker build --build-arg NODE_IMAGE_VERSION=10-alpine \
                            --build-arg PROCESS_ENGINE_VERSION=0.1.3 \
-                           --build-arg BPMN_STUDIO_VERSION=develop ${full_image_name} .");
+                           --build-arg BPMN_STUDIO_VERSION=develop \
+                           --tag ${full_image_name} .");
         }
       }
     }
