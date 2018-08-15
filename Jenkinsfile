@@ -51,6 +51,8 @@ pipeline {
         withDockerRegistry([ credentialsId: "5mio-docker-hub-username-and-password", url: "" ]) {
           script {
             sh("docker push ${full_image_name}");
+            sh("docker tag ${full_image_name} ${image_name}:latest")
+            sh("docker push ${image_name}:latest")
           }
         }
       }
