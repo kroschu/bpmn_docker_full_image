@@ -33,46 +33,52 @@ pipeline {
 
   stages {
     stage('Build') {
-      when (BRANCH_NAME == 'develop' || BRANCH_NAME == 'master') {
-        steps {
-          script {
-            branch_name = "${env.BRANCH_NAME}".replace("/", "-");
-            image_tag = "${branch_name}-b${env.BUILD_NUMBER}";
-            image_name = '5minds/bpmn-studio-bundle';
+      when {
+        anyOf { 
+          branch 'master'; 
+          branch 'develop' }
+      }
+      steps {
+        script {
+          branch_name = "${env.BRANCH_NAME}".replace("/", "-");
+          image_tag = "${branch_name}-b${env.BUILD_NUMBER}";
+          image_name = '5minds/bpmn-studio-bundle';
 
-            full_image_name = "${image_name}:${image_tag}";
+          full_image_name = "${image_name}:${image_tag}";
 
-            if (BRANCH_NAME == 'master') {
-              sh("docker build --build-arg NODE_IMAGE_VERSION=10-alpine \
-                              --build-arg PROCESS_ENGINE_VERSION=latest \
-                              --build-arg BPMN_STUDIO_VERSION=latest \
-                              --tag ${full_image_name} .");
-            } else  {
-              sh("docker build --build-arg NODE_IMAGE_VERSION=10-alpine \
-                              --build-arg PROCESS_ENGINE_VERSION=develop \
-                              --build-arg BPMN_STUDIO_VERSION=develop \
-                              --tag ${full_image_name} .");
-            }
+          if (BRANCH_NAME == 'master') {
+            sh("docker build --build-arg NODE_IMAGE_VERSION=10-alpine \
+                            --build-arg PROCESS_ENGINE_VERSION=latest \
+                            --build-arg BPMN_STUDIO_VERSION=latest \
+                            --tag ${full_image_name} .");
+          } else  {
+            sh("docker build --build-arg NODE_IMAGE_VERSION=10-alpine \
+                            --build-arg PROCESS_ENGINE_VERSION=develop \
+                            --build-arg BPMN_STUDIO_VERSION=develop \
+                            --tag ${full_image_name} .");
           }
         }
       }
     }
     stage('publish') {
-      when (BRANCH_NAME == 'develop' || BRANCH_NAME == 'master') {
-        steps {
-          withDockerRegistry([ credentialsId: "5mio-docker-hub-username-and-password", url: "" ]) {
-            script {
-              // Push with build number
-              sh("docker push ${full_image_name}");
+      when {
+        anyOf { 
+          branch 'master'; 
+          branch 'develop' }
+      }
+      steps {
+        withDockerRegistry([ credentialsId: "5mio-docker-hub-username-and-password", url: "" ]) {
+          script {
+            // Push with build number
+            sh("docker push ${full_image_name}");
 
-              // Push with latest tag
-              sh("docker tag ${full_image_name} ${image_name}:latest");
-              sh("docker push ${image_name}:latest");
+            // Push with latest tag
+            sh("docker tag ${full_image_name} ${image_name}:latest");
+            sh("docker push ${image_name}:latest");
 
-              // Push with branch tag
-              sh("docker tag ${full_image_name} ${image_name}:${branch_name}")
-              sh("docker push ${image_name}:${branch_name}");
-            }
+            // Push with branch tag
+            sh("docker tag ${full_image_name} ${image_name}:${branch_name}")
+            sh("docker push ${image_name}:${branch_name}");
           }
         }
       }
