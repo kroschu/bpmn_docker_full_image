@@ -70,11 +70,13 @@ pipeline {
         withDockerRegistry([ credentialsId: "5mio-docker-hub-username-and-password", url: "" ]) {
           script {
             // Push with build number
-            sh("docker push ${full_image_name}");
-
+            // sh("docker push ${full_image_name}");
+            
             // Push with latest tag
-            sh("docker tag ${full_image_name} ${image_name}:latest");
-            sh("docker push ${image_name}:latest");
+            if (BRANCH_NAME == 'master') {
+              sh("docker tag ${full_image_name} ${image_name}:latest");
+              sh("docker push ${image_name}:latest");
+            }
 
             // Push with branch tag
             sh("docker tag ${full_image_name} ${image_name}:${branch_name}")
