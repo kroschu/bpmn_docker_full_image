@@ -29,6 +29,10 @@ def cleanup_workspace() {
 }
 
 pipeline {
+  triggers { 
+    upstream(upstreamProjects: 'process-engine_node-lts/bpmn-studio/master,process-engine_node-lts/process_engine_runtime/master', 
+             threshold: hudson.model.Result.SUCCESS) 
+  }
   agent any
 
   stages {
