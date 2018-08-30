@@ -29,37 +29,62 @@ def cleanup_workspace() {
 }
 
 pipeline {
+  triggers { 
+    upstream(upstreamProjects: 'process-engine_node-lts/bpmn-studio/master,process-engine_node-lts/process_engine_runtime/master', 
+             threshold: hudson.model.Result.SUCCESS) 
+  }
   agent any
 
   stages {
     stage('Build') {
+      when {
+        anyOf { 
+          branch 'master'; 
+          branch 'develop' }
+      }
       steps {
         script {
-          image_tag = "${env.BRANCH_NAME}-b${env.BUILD_NUMBER}";
+          branch_name = "${env.BRANCH_NAME}".replace("/", "-");
+          image_tag = "${branch_name}-b${env.BUILD_NUMBER}";
           image_name = '5minds/bpmn-studio-bundle';
 
-          full_image_name = "${image_name}:${image_tag}"
-          sh("docker build --build-arg NODE_IMAGE_VERSION=10-alpine \
-                           --build-arg PROCESS_ENGINE_VERSION=0.1.3 \
-                           --build-arg BPMN_STUDIO_VERSION=4.0.1-e0952e0d-b1 \
-                           --tag ${full_image_name} .");
+          full_image_name = "${image_name}:${image_tag}";
+
+          if (BRANCH_NAME == 'master') {
+            sh("docker build --build-arg NODE_IMAGE_VERSION=10-alpine \
+                            --build-arg PROCESS_ENGINE_VERSION=latest \
+                            --build-arg BPMN_STUDIO_VERSION=latest \
+                            --tag ${full_image_name} .");
+          } else  {
+            sh("docker build --build-arg NODE_IMAGE_VERSION=10-alpine \
+                            --build-arg PROCESS_ENGINE_VERSION=develop \
+                            --build-arg BPMN_STUDIO_VERSION=develop \
+                            --tag ${full_image_name} .");
+          }
         }
       }
     }
     stage('publish') {
+      when {
+        anyOf { 
+          branch 'master'; 
+          branch 'develop' }
+      }
       steps {
         withDockerRegistry([ credentialsId: "5mio-docker-hub-username-and-password", url: "" ]) {
           script {
             // Push with build number
-            sh("docker push ${full_image_name}");
-
+            // sh("docker push ${full_image_name}");
+            
             // Push with latest tag
-            sh("docker tag ${full_image_name} ${image_name}:latest");
-            sh("docker push ${image_name}:latest");
+            if (BRANCH_NAME == 'master') {
+              sh("docker tag ${full_image_name} ${image_name}:latest");
+              sh("docker push ${image_name}:latest");
+            }
 
             // Push with branch tag
-            sh("docker tag ${full_image_name} ${image_name}:${env.BRANCH_NAME}")
-            sh("docker push ${image_name}:${env.BRANCH_NAME}");
+            sh("docker tag ${full_image_name} ${image_name}:${branch_name}")
+            sh("docker push ${image_name}:${branch_name}");
           }
         }
       }
