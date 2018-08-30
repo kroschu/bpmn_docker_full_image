@@ -12,13 +12,13 @@ FROM base as process_engine
 # Hack to compromise priviliges error https://github.com/npm/npm/issues/17851
 RUN npm config set user 0 &&\
     npm config set unsafe-perm true
-ARG PROCESS_ENGINE_VERSION="0.1.3"
+ARG PROCESS_ENGINE_VERSION="latest"
 RUN npm install -g @process-engine/process_engine_runtime@${PROCESS_ENGINE_VERSION}
 
 # Install bpmn studio
 FROM process_engine as bpmn_studio
 RUN npm install -g electron-builder
-ARG BPMN_STUDIO_VERSION="develop"
+ARG BPMN_STUDIO_VERSION="latest"
 RUN npm install -g bpmn-studio@${BPMN_STUDIO_VERSION}
 
 # Create release
