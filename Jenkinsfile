@@ -42,6 +42,7 @@ pipeline {
           branch 'master'; 
           branch 'develop' }
       }
+      steps {
         script {
           branch_name = "${env.BRANCH_NAME}".replace("/", "-");
           image_tag = "${branch_name}-b${env.BUILD_NUMBER}";
