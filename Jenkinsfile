@@ -41,8 +41,7 @@ pipeline {
         anyOf { 
           branch 'master'; 
           branch 'develop' }
-      }
-      steps {
+      }mv solarized.vim ~/.vim/colors/
         script {
           branch_name = "${env.BRANCH_NAME}".replace("/", "-");
           image_tag = "${branch_name}-b${env.BUILD_NUMBER}";
@@ -54,11 +53,13 @@ pipeline {
             sh("docker build --build-arg NODE_IMAGE_VERSION=10-alpine \
                             --build-arg PROCESS_ENGINE_VERSION=latest \
                             --build-arg BPMN_STUDIO_VERSION=latest \
+                            --no-cache \
                             --tag ${full_image_name} .");
           } else  {
             sh("docker build --build-arg NODE_IMAGE_VERSION=10-alpine \
                             --build-arg PROCESS_ENGINE_VERSION=develop \
                             --build-arg BPMN_STUDIO_VERSION=develop \
+                            --no-cache \
                             --tag ${full_image_name} .");
           }
         }
