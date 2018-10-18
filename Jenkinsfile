@@ -41,7 +41,7 @@ pipeline {
         anyOf { 
           branch 'master'; 
           branch 'develop' }
-      }mv solarized.vim ~/.vim/colors/
+      }
         script {
           branch_name = "${env.BRANCH_NAME}".replace("/", "-");
           image_tag = "${branch_name}-b${env.BUILD_NUMBER}";
