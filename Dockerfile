@@ -1,9 +1,9 @@
 # Define NodeJS docker image.
 # Here we use alpine as distribution
-ARG NODE_IMAGE_VERSION=10-alpine
+ARG NODE_IMAGE_VERSION=0.10.22
 
 # Create base image
-FROM node:${NODE_IMAGE_VERSION} as base
+FROM resin/raspberry-pi-alpine-node:${NODE_IMAGE_VERSION} as base
 RUN apk add --no-cache tini python make g++ supervisor
 COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
